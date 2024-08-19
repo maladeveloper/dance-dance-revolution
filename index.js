@@ -10,26 +10,41 @@ const upArrow = document.getElementById('up-arrow');
 const rightArrow = document.getElementById('right-arrow');
 const displayCounter = document.getElementById("counter")
 
+const arrows = ['top','bottom', 'right', 'left']
+const arrowStates = arrows.reduce((obj, name) => {
+    return {
+        ...obj,
+        [name]:{
+            position: 0,
+            speed: Math.round(Math.random() * 10)
+        }
+    }
+})
+console.log('arrowStates:', arrowStates  )
+
+
 const game = {
     upArrowPosition: 0,
     rightArrowPosition: 0,
 }
 
 function renderBoard() {
-    upArrow.style.bottom = `${game.upArrowPosition}px`;
-    rightArrow.style.bottom = `${game.rightArrowPosition}px`;
+    arrows.forEach( name => {
+        const arrow = document.getElementById(`${name}-arrow`);
+        arrow.style.bottom = `${arrowStates[name].position}px`
+    })
 }
 
 function gameLoop() {
-    game.upArrowPosition += 5;
-    game.rightArrowPosition += 3;
-    if(game.upArrowPosition >= boardHeight){
-        game.upArrowPosition = 0
-    }
+    arrows.map( arrowName => {
+        const arrowState = arrowStates[arrowName]
+        arrowState.position += arrowState.speed
 
-    if(game.rightArrowPosition >= boardHeight){
-        game.rightArrowPosition = 0
-    }
+        if(arrowState.position >= boardHeight){
+            arrowState.position = 0
+        }
+    })
+
     renderBoard();
 }
 
@@ -41,6 +56,10 @@ const topAcceptableHeigth = goalHeight + acceptableVariance
 
 
 document.body.addEventListener("keyup", (e) => {
+    arrows.forEach(arrowName => {
+
+    })
+
     const keyPressed = e.key
     if(keyPressed === "ArrowUp"){
         const aboveAcceptableHeight =   game.upArrowPosition > bottomAcceptableHeight
